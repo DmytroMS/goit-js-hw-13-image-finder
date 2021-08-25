@@ -1,4 +1,5 @@
 import NewApiService from './src/apiService';
+import cardsTpl from './templetes/cards.hbs';
 
 
 
@@ -17,28 +18,28 @@ const newApiService = new NewApiService();
 
 
 function onSearch(e) {
-    e.preventDefault();                
+    e.preventDefault();
+   // cleanUpGalleryContainer();
     newApiService.query = e.currentTarget.elements.query.value.trim();
-    newApiService.fetchArticle();   
+    newApiService.resetPage();
+    newApiService.fetchArticle().then(cards => {
+        // если поставить очистку контейнера в этом then то сначала будет поиск новых картинок, а потом очистка старых и рендер новых
+        cleanUpGalleryContainer();  
+        cardsRender(cards)}
+   );
+    
 }
 
 
 
 function onLoadMore() {
-      newApiService.fetchArticle();
+      newApiService.fetchArticle().then(cardsRender);
 }
 
-// console.log(newApiService);
-// function fetchPictures() {
-  
-// const URL = 'https://pixabay.com/api/';
-// const API_KEY = '23079700-bbc75e3a6b7c3c448487aea29';
-   
-    
-// fetch(`${URL}?image_type=photo&orientation=horizontal&q=dog&page=1&per_page=12&key=${API_KEY}`)
-//     .then(r => r.json())
-//     .then(console.log) 
+function cardsRender(cards) {
+    refs.gallery.insertAdjacentHTML('beforeend', cardsTpl(cards));
+}
 
-// }
-
-// fetchPictures();
+function cleanUpGalleryContainer() {
+    refs.gallery.innerHTML = '';
+}
