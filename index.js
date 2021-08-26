@@ -21,6 +21,9 @@ function onSearch(e) {
     e.preventDefault();
    // cleanUpGalleryContainer();
     newApiService.query = e.currentTarget.elements.query.value.trim();
+    if (newApiService.query === '') {
+        return alert('уточните запрос');
+ }
     newApiService.resetPage();
     newApiService.fetchArticle().then(cards => {
         // если поставить очистку контейнера в этом then то сначала будет поиск новых картинок, а потом очистка старых и рендер новых

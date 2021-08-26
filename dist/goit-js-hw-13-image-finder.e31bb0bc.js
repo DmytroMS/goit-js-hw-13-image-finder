@@ -171,15 +171,7 @@ var NewApiService = /*#__PURE__*/function () {
   }]);
 
   return NewApiService;
-}(); // function fetchPictures() {
-// const URL = 'https://pixabay.com/api/';
-// const API_KEY = '23079700-bbc75e3a6b7c3c448487aea29';
-// fetch(`${URL}?image_type=photo&orientation=horizontal&q=${searchQuery}&page=1&per_page=12&key=${API_KEY}`)
-//     .then(r => r.json())
-//     .then(console.log) 
-// }
-// fetchPictures(dog);
-
+}();
 
 exports.default = NewApiService;
 },{}],"node_modules/handlebars/dist/handlebars.runtime.js":[function(require,module,exports) {
@@ -2348,6 +2340,11 @@ function onSearch(e) {
   e.preventDefault(); // cleanUpGalleryContainer();
 
   newApiService.query = e.currentTarget.elements.query.value.trim();
+
+  if (newApiService.query === '') {
+    return alert('уточните запрос');
+  }
+
   newApiService.resetPage();
   newApiService.fetchArticle().then(function (cards) {
     // если поставить очистку контейнера в этом then то сначала будет поиск новых картинок, а потом очистка старых и рендер новых
@@ -2395,7 +2392,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64888" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62489" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
