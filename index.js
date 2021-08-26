@@ -47,6 +47,7 @@ function onLoadMore() {
     newApiService.fetchArticle().then(cards => {
         cardsRender(cards);
         loadMoreBtn.enable();
+        loadMoreScroll();
     });
 }
 
@@ -56,4 +57,12 @@ function cardsRender(cards) {
 
 function cleanUpGalleryContainer() {
     refs.gallery.innerHTML = '';
+}
+
+function loadMoreScroll() {
+    const element = loadMoreBtn.refs.button; // тут мы определяем место куда нужно проскролить
+    element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'end',
+    });
 }
