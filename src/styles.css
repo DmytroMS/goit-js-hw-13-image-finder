@@ -53,3 +53,7 @@ li {
   margin-left: auto;
   margin-right: auto;
 }
+
+.btm-load-more.is-hidden {
+  display: none;
+}

@@ -2318,23 +2318,91 @@ var templateFunction = _handlebars.default.template({
 
 var _default = templateFunction;
 exports.default = _default;
-},{"handlebars/dist/handlebars.runtime":"node_modules/handlebars/dist/handlebars.runtime.js"}],"index.js":[function(require,module,exports) {
+},{"handlebars/dist/handlebars.runtime":"node_modules/handlebars/dist/handlebars.runtime.js"}],"src/load-more-Btn.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var LoadMoreBtn = /*#__PURE__*/function () {
+  function LoadMoreBtn(_ref) {
+    var selector = _ref.selector,
+        _ref$hidden = _ref.hidden,
+        hidden = _ref$hidden === void 0 ? false : _ref$hidden;
+
+    _classCallCheck(this, LoadMoreBtn);
+
+    this.refs = this.getRefs(selector);
+    hidden && this.hide();
+  }
+
+  _createClass(LoadMoreBtn, [{
+    key: "getRefs",
+    value: function getRefs(selector) {
+      var refs = {};
+      refs.button = document.querySelector(selector);
+      refs.label = refs.button.querySelector('.label');
+      return refs;
+    }
+  }, {
+    key: "enable",
+    value: function enable() {
+      this.refs.button.disabled = false;
+      this.refs.label.textContent = 'Показать ещё';
+    }
+  }, {
+    key: "disable",
+    value: function disable() {
+      this.refs.button.disabled = true;
+      this.refs.label.textContent = 'Загружаем...';
+    }
+  }, {
+    key: "show",
+    value: function show() {
+      this.refs.button.classList.remove('is-hidden');
+    }
+  }, {
+    key: "hide",
+    value: function hide() {
+      this.refs.button.classList.add('is-hidden');
+    }
+  }]);
+
+  return LoadMoreBtn;
+}();
+
+exports.default = LoadMoreBtn;
+},{}],"index.js":[function(require,module,exports) {
 "use strict";
 
 var _apiService = _interopRequireDefault(require("./src/apiService"));
 
 var _cards = _interopRequireDefault(require("./templetes/cards.hbs"));
 
+var _loadMoreBtn = _interopRequireDefault(require("./src/load-more-Btn"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var refs = {
   searchForm: document.querySelector('.js-search-form'),
-  gallery: document.querySelector('.js-gallery'),
-  loadMoreBtn: document.querySelector('[data-action="Load-more"]')
+  gallery: document.querySelector('.js-gallery') //   loadMoreBtn: document.querySelector('[data-action="Load-more"]'),
+
 };
 refs.searchForm.addEventListener('submit', onSearch);
-refs.loadMoreBtn.addEventListener('click', onLoadMore);
 var newApiService = new _apiService.default();
+var loadMoreBtn = new _loadMoreBtn.default({
+  selector: '[data-action="Load-more"]',
+  hidden: true
+});
+loadMoreBtn.refs.button.addEventListener('click', onLoadMore);
 
 function onSearch(e) {
   e.preventDefault(); // cleanUpGalleryContainer();
@@ -2345,16 +2413,23 @@ function onSearch(e) {
     return alert('уточните запрос');
   }
 
+  loadMoreBtn.show();
+  loadMoreBtn.disable();
   newApiService.resetPage();
   newApiService.fetchArticle().then(function (cards) {
     // если поставить очистку контейнера в этом then то сначала будет поиск новых картинок, а потом очистка старых и рендер новых
     cleanUpGalleryContainer();
     cardsRender(cards);
+    loadMoreBtn.enable();
   });
 }
 
 function onLoadMore() {
-  newApiService.fetchArticle().then(cardsRender);
+  loadMoreBtn.disable();
+  newApiService.fetchArticle().then(function (cards) {
+    cardsRender(cards);
+    loadMoreBtn.enable();
+  });
 }
 
 function cardsRender(cards) {
@@ -2364,7 +2439,7 @@ function cardsRender(cards) {
 function cleanUpGalleryContainer() {
   refs.gallery.innerHTML = '';
 }
-},{"./src/apiService":"src/apiService.js","./templetes/cards.hbs":"templetes/cards.hbs"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./src/apiService":"src/apiService.js","./templetes/cards.hbs":"templetes/cards.hbs","./src/load-more-Btn":"src/load-more-Btn.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -2392,7 +2467,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62489" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52586" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

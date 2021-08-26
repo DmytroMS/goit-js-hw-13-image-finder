@@ -1,19 +1,26 @@
 import NewApiService from './src/apiService';
 import cardsTpl from './templetes/cards.hbs';
-
-
+import LoadMoreBtn from './src/load-more-Btn';
 
 
 const refs = {
     searchForm: document.querySelector('.js-search-form'),
     gallery: document.querySelector('.js-gallery'),
-    loadMoreBtn: document.querySelector('[data-action="Load-more"]'),
+ //   loadMoreBtn: document.querySelector('[data-action="Load-more"]'),
 }
 
 refs.searchForm.addEventListener('submit', onSearch);
-refs.loadMoreBtn.addEventListener('click', onLoadMore);
+
 
 const newApiService = new NewApiService();
+const loadMoreBtn = new LoadMoreBtn(
+    {
+        selector: '[data-action="Load-more"]',
+        hidden: true,
+    }
+);
+
+loadMoreBtn.refs.button.addEventListener('click', onLoadMore);
 
 
 
@@ -23,20 +30,24 @@ function onSearch(e) {
     newApiService.query = e.currentTarget.elements.query.value.trim();
     if (newApiService.query === '') {
         return alert('уточните запрос');
- }
+    }
+    loadMoreBtn.show();
+    loadMoreBtn.disable();
     newApiService.resetPage();
     newApiService.fetchArticle().then(cards => {
         // если поставить очистку контейнера в этом then то сначала будет поиск новых картинок, а потом очистка старых и рендер новых
         cleanUpGalleryContainer();  
-        cardsRender(cards)}
-   );
-    
+        cardsRender(cards);
+        loadMoreBtn.enable();
+    });  
 }
 
-
-
 function onLoadMore() {
-      newApiService.fetchArticle().then(cardsRender);
+    loadMoreBtn.disable();
+    newApiService.fetchArticle().then(cards => {
+        cardsRender(cards);
+        loadMoreBtn.enable();
+    });
 }
 
 function cardsRender(cards) {
